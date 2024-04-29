@@ -14,6 +14,7 @@ pygame.display.set_caption("Python Invasores Espaciales")
 
 reloj = pygame.time.Clock()
 
+# Implementación nave
 nave = Nave(pantalla_ancho, pantalla_largo)
 grupo_nave = pygame.sprite.GroupSingle()
 grupo_nave.add(nave)
@@ -31,6 +32,7 @@ while True:
     # Dibujando
     pantalla.fill(plomo)
     grupo_nave.draw(pantalla)
+    grupo_nave.sprite.grupo_lasers.draw(pantalla)
 
     pygame.display.update()
     reloj.tick(60)
