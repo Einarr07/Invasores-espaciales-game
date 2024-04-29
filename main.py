@@ -1,4 +1,5 @@
 import pygame, sys
+from nave import Nave
 
 pygame.init()
 
@@ -13,14 +14,23 @@ pygame.display.set_caption("Python Invasores Espaciales")
 
 reloj = pygame.time.Clock()
 
+nave = Nave(pantalla_ancho, pantalla_largo)
+grupo_nave = pygame.sprite.GroupSingle()
+grupo_nave.add(nave)
+
 while True:
     # Comprovando los eventos
     for enento in pygame.event.get():
         if enento.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
+
+    # Actualizando
+    grupo_nave.update()
+
     # Dibujando
     pantalla.fill(plomo)
+    grupo_nave.draw(pantalla)
 
     pygame.display.update()
     reloj.tick(60)
