@@ -1,5 +1,5 @@
 import pygame, sys
-from nave import Nave
+from juego import Juego
 
 pygame.init()
 
@@ -19,10 +19,7 @@ pygame.display.set_caption("Python Invasores Espaciales")
 # Controlar la velocidad de los fotogramas
 reloj = pygame.time.Clock()
 
-# Implementación nave
-nave = Nave(pantalla_ancho, pantalla_largo)
-grupo_nave = pygame.sprite.GroupSingle()
-grupo_nave.add(nave)
+juego = Juego(pantalla_ancho, pantalla_largo)
 
 while True:
     # Comprovando los eventos
@@ -32,12 +29,14 @@ while True:
             sys.exit()
 
     # Actualizar la posición de los objetos
-    grupo_nave.update()
+    juego.grupo_nave.update()
 
     # Dibujar en la pantalla
     pantalla.fill(plomo)
-    grupo_nave.draw(pantalla)
-    grupo_nave.sprite.grupo_lasers.draw(pantalla)
+    juego.grupo_nave.draw(pantalla)
+    juego.grupo_nave.sprite.grupo_lasers.draw(pantalla)
+    for obstaculo in juego.obstaculos:
+        obstaculo.grupo_bloqueo.draw(pantalla)
 
     # Actualizar pantalla
     pygame.display.update()
