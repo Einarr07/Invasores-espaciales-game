@@ -1,7 +1,8 @@
-import pygame
+import pygame, random
 from nave import Nave
 from obstaculos import Obstaculo, defensa
-
+from alien import Alien
+from laser import Laser
 
 # Definición de la clase Juego
 class Juego:
@@ -15,6 +16,14 @@ class Juego:
         self.grupo_nave.add(Nave(self.pantalla_ancho, self.pantalla_largo))
         # Crear los obstáculos del juego
         self.obstaculos = self.crear_obstaculos()
+        # Crear un grupo de sprites para los aliens
+        self.grupo_aliens = pygame.sprite.Group()
+        # Crear los aliens del juego
+        self.crear_aliens()
+        # Dirección inicial de los aliens
+        self.direccion_aliens = 1
+        # Crear un grupo de sprites para los lasers de los aliens
+        self.grupo_lasers_alien = pygame.sprite.Group()
 
     def crear_obstaculos(self):
         # Calcular el ancho total de los obstáculos
@@ -33,3 +42,48 @@ class Juego:
             obstaculos.append(obstaculo)
         # Devolver la lista de obstáculos
         return obstaculos
+
+    def crear_aliens(self):
+        # Crear los aliens en filas y columnas
+        for fila in range(5):
+            for columna in range(11):
+                x = 75 + columna * 55
+                y = 110 + fila * 55
+
+                # Determinar el tipo de alien según la fila
+                if fila == 0:
+                    tipo_alien = 3
+                elif fila in (1,2):
+                    tipo_alien = 2
+                else:
+                    tipo_alien = 1
+
+                # Crear un alien en la posición calculada
+                alien = Alien(tipo_alien, x, y)
+                self.grupo_aliens.add(alien)
+
+    def mover_aliens(self):
+        # Mover los aliens en la pantalla
+        self.grupo_aliens.update(self.direccion_aliens)
+        aliens_grafico = self.grupo_aliens.sprites()
+        for alien in aliens_grafico:
+            # Cambiar de dirección si un alien alcanza los bordes de la pantalla
+            if alien.rect.right >= self.pantalla_ancho:
+                self.direccion_aliens = -1
+                self.mover_aliens_abajo(2)
+            elif alien.rect.left <= 0:
+                self.direccion_aliens = 1
+                self.mover_aliens_abajo(2)
+
+    def mover_aliens_abajo(self, distancia):
+        # Mover todos los aliens hacia abajo
+        if self.grupo_aliens:
+            for alien in self.grupo_aliens.sprites():
+                alien.rect.y += distancia
+
+    def alien_laser(self):
+        # Disparar un laser desde un alien aleatorio
+        if self.grupo_aliens.sprites():
+            alien_random = random.choice(self.grupo_aliens.sprites())
+            laser_grafico = Laser(alien_random.rect.center, -6, self.pantalla_largo)
+            self.grupo_lasers_alien.add(laser_grafico)

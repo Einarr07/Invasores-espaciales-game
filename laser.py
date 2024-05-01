@@ -1,5 +1,6 @@
 import pygame
 
+
 # Definición de la clase Laser
 class Laser(pygame.sprite.Sprite):
     def __init__(self, posicion, velocidad, pantalla_altura):
