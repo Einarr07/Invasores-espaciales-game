@@ -5,6 +5,7 @@ from alien import Alien
 from laser import Laser
 from alien import NaveMisteriorsa
 
+
 # Definición de la clase Juego
 class Juego:
     def __init__(self, pantalla_ancho, pantalla_largo):
@@ -56,7 +57,7 @@ class Juego:
                 # Determinar el tipo de alien según la fila
                 if fila == 0:
                     tipo_alien = 3
-                elif fila in (1,2):
+                elif fila in (1, 2):
                     tipo_alien = 2
                 else:
                     tipo_alien = 1
@@ -93,3 +94,35 @@ class Juego:
 
     def crear_nave_misteriosa(self):
         self.grupo_nave_misteriosa.add(NaveMisteriorsa(self.pantalla_ancho))
+
+    def verificar_colisiones(self):
+        # Laser que dispara nuestro tanqu
+        if self.grupo_nave.sprite.grupo_lasers:
+            for laser_grafico in self.grupo_nave.sprite.grupo_lasers:
+                if pygame.sprite.spritecollide(laser_grafico, self.grupo_aliens, True):
+                    laser_grafico.kill()
+                if pygame.sprite.spritecollide(laser_grafico, self.grupo_nave_misteriosa, True):
+                    laser_grafico.kill()
+
+                for obstaculo in self.obstaculos:
+                    if pygame.sprite.spritecollide(laser_grafico, obstaculo.grupo_bloqueo, True):
+                        laser_grafico.kill()
+
+        # Laser que disparan los aliens
+        if self.grupo_lasers_alien:
+            for laser_grafico in self.grupo_lasers_alien:
+                if pygame.sprite.spritecollide(laser_grafico, self.grupo_nave, False):
+                    laser_grafico.kill()
+                    print("Golpe nave")
+
+                for obstaculo in self.obstaculos:
+                    if pygame.sprite.spritecollide(laser_grafico, obstaculo.grupo_bloqueo, True):
+                        laser_grafico.kill()
+
+        if self.grupo_aliens:
+            for alien in self.grupo_aliens:
+                for obstaculo in self.obstaculos:
+                    pygame.sprite.spritecollide(alien, obstaculo.grupo_bloqueo, True)
+                    if pygame.sprite.spritecollide(alien, self.grupo_nave, False):
+                        print("Golpe nave 2")
+

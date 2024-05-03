@@ -46,6 +46,7 @@ while True:
     juego.mover_aliens()
     juego.grupo_lasers_alien.update()
     juego.grupo_nave_misteriosa.update()
+    juego.verificar_colisiones()
 
     # Dibujar en la pantalla
     pantalla.fill(plomo)
