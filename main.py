@@ -1,4 +1,4 @@
-import pygame, sys
+import pygame, sys, random
 from juego import Juego
 
 pygame.init()
@@ -26,6 +26,9 @@ juego = Juego(pantalla_ancho, pantalla_largo)
 disparar_laser = pygame.USEREVENT
 pygame.time.set_timer(disparar_laser, 300)
 
+nave_misteriosa = pygame.USEREVENT + 1
+pygame.time.set_timer(nave_misteriosa, random.randint(4000,8000))
+
 while True:
     # Comprobar los eventos
     for evento in pygame.event.get():
@@ -34,11 +37,15 @@ while True:
             sys.exit()
         if evento.type == disparar_laser:
             juego.alien_laser()
+        if evento.type == nave_misteriosa:
+            juego.crear_nave_misteriosa()
+            pygame.time.set_timer(nave_misteriosa, random.randint(4000,8000))
 
     # Actualizar la posición de los objetos
     juego.grupo_nave.update()
     juego.mover_aliens()
     juego.grupo_lasers_alien.update()
+    juego.grupo_nave_misteriosa.update()
 
     # Dibujar en la pantalla
     pantalla.fill(plomo)
@@ -48,6 +55,7 @@ while True:
         obstaculo.grupo_bloqueo.draw(pantalla)
     juego.grupo_aliens.draw(pantalla)
     juego.grupo_lasers_alien.draw(pantalla)
+    juego.grupo_nave_misteriosa.draw(pantalla)
 
     # Actualizar pantalla
     pygame.display.update()

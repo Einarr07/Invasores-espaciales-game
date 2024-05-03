@@ -3,6 +3,7 @@ from nave import Nave
 from obstaculos import Obstaculo, defensa
 from alien import Alien
 from laser import Laser
+from alien import NaveMisteriorsa
 
 # Definición de la clase Juego
 class Juego:
@@ -24,6 +25,8 @@ class Juego:
         self.direccion_aliens = 1
         # Crear un grupo de sprites para los lasers de los aliens
         self.grupo_lasers_alien = pygame.sprite.Group()
+        #
+        self.grupo_nave_misteriosa = pygame.sprite.GroupSingle()
 
     def crear_obstaculos(self):
         # Calcular el ancho total de los obstáculos
@@ -87,3 +90,6 @@ class Juego:
             alien_random = random.choice(self.grupo_aliens.sprites())
             laser_grafico = Laser(alien_random.rect.center, -6, self.pantalla_largo)
             self.grupo_lasers_alien.add(laser_grafico)
+
+    def crear_nave_misteriosa(self):
+        self.grupo_nave_misteriosa.add(NaveMisteriorsa(self.pantalla_ancho))
