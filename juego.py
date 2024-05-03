@@ -38,7 +38,12 @@ class Juego:
         #
         self.highscore = 0
         #
+        self.sonidos_de_explosion = pygame.mixer.Sound("Sonidos/explosión.ogg")
+        #
         self.cargar_puntos_max()
+        #
+        pygame.mixer.music.load("Sonidos/música.ogg")
+        pygame.mixer.music.play(-1)
 
     def crear_obstaculos(self):
         # Calcular el ancho total de los obstáculos
@@ -112,6 +117,7 @@ class Juego:
             for laser_grafico in self.grupo_nave.sprite.grupo_lasers:
                 golpe_aliens = pygame.sprite.spritecollide(laser_grafico, self.grupo_aliens, True)
                 if golpe_aliens:
+                    self.sonidos_de_explosion.play()
                     for alien in golpe_aliens:
                         self.score += alien.tipo * 100
                         self.verificar_max_puntos()
@@ -119,6 +125,7 @@ class Juego:
 
                 if pygame.sprite.spritecollide(laser_grafico, self.grupo_nave_misteriosa, True):
                     self.score += 500
+                    self.sonidos_de_explosion.play()
                     self.verificar_max_puntos()
                     laser_grafico.kill()
 

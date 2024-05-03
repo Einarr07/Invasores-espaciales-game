@@ -16,6 +16,7 @@ class Nave(pygame.sprite.Sprite):
         self.laser_listo = True
         self.laser_tiempo = 0
         self.laser_retraso = 300
+        self.sonido_laser = pygame.mixer.Sound("Sonidos/laser.ogg")
 
     # Método para controlar la entrada del usuario
     def entrada_usuario(self):
@@ -32,6 +33,7 @@ class Nave(pygame.sprite.Sprite):
             laser = Laser(self.rect.center, 5, self.pantalla_largo)
             self.grupo_lasers.add(laser)
             self.laser_tiempo = pygame.time.get_ticks()
+            self.sonido_laser.play()
 
     # Método para actualizar la posición y estado de la nave
     def update(self):
