@@ -8,14 +8,15 @@ from alien import NaveMisteriorsa
 
 # Definición de la clase Juego
 class Juego:
-    def __init__(self, pantalla_ancho, pantalla_largo):
+    def __init__(self, pantalla_ancho, pantalla_largo, balance):
         # Inicializar las dimensiones de la pantalla
         self.pantalla_ancho = pantalla_ancho
         self.pantalla_largo = pantalla_largo
+        self.balance = balance
         # Crear un grupo de sprites para la nave
         self.grupo_nave = pygame.sprite.GroupSingle()
         # Añadir una instancia de la clase Nave al grupo de la nave
-        self.grupo_nave.add(Nave(self.pantalla_ancho, self.pantalla_largo))
+        self.grupo_nave.add(Nave(self.pantalla_ancho, self.pantalla_largo, self.balance))
         # Crear los obstáculos del juego
         self.obstaculos = self.crear_obstaculos()
         # Crear un grupo de sprites para los aliens
@@ -28,12 +29,16 @@ class Juego:
         self.grupo_lasers_alien = pygame.sprite.Group()
         #
         self.grupo_nave_misteriosa = pygame.sprite.GroupSingle()
+        #
+        self.lives = 3
+        #
+        self.run = True
 
     def crear_obstaculos(self):
         # Calcular el ancho total de los obstáculos
         obstaculos_ancho = len(defensa[0]) * 3
         # Calcular el espacio entre los obstáculos
-        brecha = (self.pantalla_ancho - (4 * obstaculos_ancho)) / 5
+        brecha = (self.pantalla_ancho + self.balance - (4 * obstaculos_ancho)) / 5
         # Lista para almacenar los obstáculos
         obstaculos = []
         # Crear 4 obstáculos
@@ -63,7 +68,7 @@ class Juego:
                     tipo_alien = 1
 
                 # Crear un alien en la posición calculada
-                alien = Alien(tipo_alien, x, y)
+                alien = Alien(tipo_alien, x + self.balance/2, y)
                 self.grupo_aliens.add(alien)
 
     def mover_aliens(self):
@@ -72,10 +77,10 @@ class Juego:
         aliens_grafico = self.grupo_aliens.sprites()
         for alien in aliens_grafico:
             # Cambiar de dirección si un alien alcanza los bordes de la pantalla
-            if alien.rect.right >= self.pantalla_ancho:
+            if alien.rect.right >= self.pantalla_ancho + self.balance/2:
                 self.direccion_aliens = -1
                 self.mover_aliens_abajo(2)
-            elif alien.rect.left <= 0:
+            elif alien.rect.left <= self.balance/2:
                 self.direccion_aliens = 1
                 self.mover_aliens_abajo(2)
 
@@ -93,7 +98,7 @@ class Juego:
             self.grupo_lasers_alien.add(laser_grafico)
 
     def crear_nave_misteriosa(self):
-        self.grupo_nave_misteriosa.add(NaveMisteriorsa(self.pantalla_ancho))
+        self.grupo_nave_misteriosa.add(NaveMisteriorsa(self.pantalla_ancho, self.balance))
 
     def verificar_colisiones(self):
         # Laser que dispara nuestro tanqu
@@ -113,7 +118,9 @@ class Juego:
             for laser_grafico in self.grupo_lasers_alien:
                 if pygame.sprite.spritecollide(laser_grafico, self.grupo_nave, False):
                     laser_grafico.kill()
-                    print("Golpe nave")
+                    self.lives -= 1
+                    if self.lives == 0:
+                        self.game_over()
 
                 for obstaculo in self.obstaculos:
                     if pygame.sprite.spritecollide(laser_grafico, obstaculo.grupo_bloqueo, True):
@@ -124,5 +131,17 @@ class Juego:
                 for obstaculo in self.obstaculos:
                     pygame.sprite.spritecollide(alien, obstaculo.grupo_bloqueo, True)
                     if pygame.sprite.spritecollide(alien, self.grupo_nave, False):
-                        print("Golpe nave 2")
+                        self.game_over()
 
+    def game_over(self):
+        self.run = False
+
+    def resetear(self):
+        self.run = True
+        self.lives = 3
+        self.grupo_nave.sprite.resetear()
+        self.grupo_aliens.empty()
+        self.grupo_lasers_alien.empty()
+        self.crear_aliens()
+        self.grupo_nave_misteriosa.empty()
+        self.obstaculos = self.crear_obstaculos()

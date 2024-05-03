@@ -20,13 +20,14 @@ class Alien(pygame.sprite.Sprite):
 
 
 class NaveMisteriorsa(pygame.sprite.Sprite):
-    def __init__(self, pantalla_ancho):
+    def __init__(self, pantalla_ancho, balance):
         super().__init__()
         self.pantalla_ancho = pantalla_ancho
+        self.balance = balance
         self.image = pygame.image.load("Graficos/misterio.png")
 
-        x = random.choice([0, self.pantalla_ancho - self.image.get_width()])
-        if x == 0:
+        x = random.choice([self.balance/2, self.pantalla_ancho + self.balance - self.image.get_width()])
+        if x == self.balance/2:
             self.velocidad = 3
         else:
             self.velocidad = -3
@@ -34,7 +35,7 @@ class NaveMisteriorsa(pygame.sprite.Sprite):
 
     def update(self):
         self.rect.x += self.velocidad
-        if self.rect.right > self.pantalla_ancho:
+        if self.rect.right > self.pantalla_ancho + self.balance/2:
             self.kill()
-        elif self.rect.left < 0:
+        elif self.rect.left < self.balance/2:
             self.kill()
