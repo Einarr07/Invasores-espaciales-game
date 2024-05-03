@@ -35,6 +35,10 @@ class Juego:
         self.run = True
         #
         self.score = 0
+        #
+        self.highscore = 0
+        #
+        self.cargar_puntos_max()
 
     def crear_obstaculos(self):
         # Calcular el ancho total de los obstáculos
@@ -110,10 +114,12 @@ class Juego:
                 if golpe_aliens:
                     for alien in golpe_aliens:
                         self.score += alien.tipo * 100
+                        self.verificar_max_puntos()
                         laser_grafico.kill()
 
                 if pygame.sprite.spritecollide(laser_grafico, self.grupo_nave_misteriosa, True):
                     self.score += 500
+                    self.verificar_max_puntos()
                     laser_grafico.kill()
 
                 for obstaculo in self.obstaculos:
@@ -153,3 +159,17 @@ class Juego:
         self.grupo_nave_misteriosa.empty()
         self.obstaculos = self.crear_obstaculos()
         self.score = 0
+
+    def verificar_max_puntos(self):
+        if self.score > self.highscore:
+            self.highscore = self.score
+
+            with open("puntos_max.txt", "w") as archivo:
+                archivo.write(str(self.highscore))
+
+    def cargar_puntos_max(self):
+        try:
+            with open("puntos_max.txt", "r") as archivo:
+                self.highscore = int(archivo.read())
+        except FileNotFoundError:
+                self.highscore = 0

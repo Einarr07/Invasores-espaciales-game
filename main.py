@@ -16,6 +16,7 @@ fuente = pygame.font.Font("Fuente/monogram.ttf", 40)
 superficie_nivel = fuente.render("NIVEL 01", False, amarillo)
 superficie_juego_terminado = fuente.render("FIN DEL JUEGO", False, amarillo)
 texto_puntos = fuente.render("PUNTOS", False, amarillo)
+texto_max_puntos = fuente.render("MAX PUNTOS", False, amarillo)
 
 # Creando la ventana de visualización
 pantalla = pygame.display.set_mode((pantalla_ancho + balance, pantalla_largo + 2*balance))
@@ -80,6 +81,10 @@ while True:
     formatear_puntos = str(juego.score).zfill(5)
     superficie_puntos = fuente.render(formatear_puntos, False, amarillo)
     pantalla.blit(superficie_puntos, (50,40,50,50))
+    pantalla.blit(texto_max_puntos, (550,15,50,50))
+    formatear_max_puntos = str(juego.highscore).zfill(5)
+    superficie_max_puntos = fuente.render(formatear_max_puntos, False, amarillo)
+    pantalla.blit(superficie_max_puntos, (625,40,50,50))
 
     juego.grupo_nave.draw(pantalla)
     juego.grupo_nave.sprite.grupo_lasers.draw(pantalla)
