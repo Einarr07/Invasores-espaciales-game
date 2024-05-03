@@ -27,21 +27,20 @@ class Juego:
         self.direccion_aliens = 1
         # Crear un grupo de sprites para los lasers de los aliens
         self.grupo_lasers_alien = pygame.sprite.Group()
-        #
+        # Crear un grupo de sprites para la nave misteriosa
         self.grupo_nave_misteriosa = pygame.sprite.GroupSingle()
-        #
+        # Inicializar el número de vidas
         self.lives = 3
-        #
+        # Bandera que indica si el juego está en ejecución
         self.run = True
-        #
+        # Puntuación actual
         self.score = 0
-        #
+        # Puntuación máxima almacenada
         self.highscore = 0
-        #
+        # Cargar el sonido de explosión
         self.sonidos_de_explosion = pygame.mixer.Sound("Sonidos/explosión.ogg")
-        #
         self.cargar_puntos_max()
-        #
+        # Cargar la música de fondo
         pygame.mixer.music.load("Sonidos/música.ogg")
         pygame.mixer.music.play(-1)
 
@@ -79,7 +78,7 @@ class Juego:
                     tipo_alien = 1
 
                 # Crear un alien en la posición calculada
-                alien = Alien(tipo_alien, x + self.balance/2, y)
+                alien = Alien(tipo_alien, x + self.balance / 2, y)
                 self.grupo_aliens.add(alien)
 
     def mover_aliens(self):
@@ -88,10 +87,10 @@ class Juego:
         aliens_grafico = self.grupo_aliens.sprites()
         for alien in aliens_grafico:
             # Cambiar de dirección si un alien alcanza los bordes de la pantalla
-            if alien.rect.right >= self.pantalla_ancho + self.balance/2:
+            if alien.rect.right >= self.pantalla_ancho + self.balance / 2:
                 self.direccion_aliens = -1
                 self.mover_aliens_abajo(2)
-            elif alien.rect.left <= self.balance/2:
+            elif alien.rect.left <= self.balance / 2:
                 self.direccion_aliens = 1
                 self.mover_aliens_abajo(2)
 
@@ -112,28 +111,31 @@ class Juego:
         self.grupo_nave_misteriosa.add(NaveMisteriorsa(self.pantalla_ancho, self.balance))
 
     def verificar_colisiones(self):
-        # Laser que dispara nuestro tanqu
+        # Verifica las colisiones de los laser de la nave con los aliens y la nave misteriosa
         if self.grupo_nave.sprite.grupo_lasers:
             for laser_grafico in self.grupo_nave.sprite.grupo_lasers:
+                # Colisiones de los laser con los aliens
                 golpe_aliens = pygame.sprite.spritecollide(laser_grafico, self.grupo_aliens, True)
                 if golpe_aliens:
                     self.sonidos_de_explosion.play()
                     for alien in golpe_aliens:
                         self.score += alien.tipo * 100
                         self.verificar_max_puntos()
-                        laser_grafico.kill()
+                    laser_grafico.kill()
 
+                # Colisiones de los laser con la nave misteriosa
                 if pygame.sprite.spritecollide(laser_grafico, self.grupo_nave_misteriosa, True):
                     self.score += 500
                     self.sonidos_de_explosion.play()
                     self.verificar_max_puntos()
                     laser_grafico.kill()
 
+                # Colisiones de los laser con los obstáculos
                 for obstaculo in self.obstaculos:
                     if pygame.sprite.spritecollide(laser_grafico, obstaculo.grupo_bloqueo, True):
                         laser_grafico.kill()
 
-        # Laser que disparan los aliens
+        # Verifica las colisiones de los laser de los aliens con la nave
         if self.grupo_lasers_alien:
             for laser_grafico in self.grupo_lasers_alien:
                 if pygame.sprite.spritecollide(laser_grafico, self.grupo_nave, False):
@@ -142,10 +144,12 @@ class Juego:
                     if self.lives == 0:
                         self.game_over()
 
+                # Colisiones de los laser con los obstáculos
                 for obstaculo in self.obstaculos:
                     if pygame.sprite.spritecollide(laser_grafico, obstaculo.grupo_bloqueo, True):
                         laser_grafico.kill()
 
+        # Verifica las colisiones de los aliens con los obstáculos y la nave
         if self.grupo_aliens:
             for alien in self.grupo_aliens:
                 for obstaculo in self.obstaculos:
@@ -154,9 +158,11 @@ class Juego:
                         self.game_over()
 
     def game_over(self):
+        # Establece la variable run en False para terminar el juego.
         self.run = False
 
     def resetear(self):
+        # Reinicia el juego
         self.run = True
         self.lives = 3
         self.grupo_nave.sprite.resetear()
@@ -168,6 +174,7 @@ class Juego:
         self.score = 0
 
     def verificar_max_puntos(self):
+        # Verifica si el puntaje actual es mayor al puntaje máximo.
         if self.score > self.highscore:
             self.highscore = self.score
 
@@ -175,8 +182,9 @@ class Juego:
                 archivo.write(str(self.highscore))
 
     def cargar_puntos_max(self):
+        # Carga el puntaje máximo desde un archivo.
         try:
             with open("puntos_max.txt", "r") as archivo:
                 self.highscore = int(archivo.read())
         except FileNotFoundError:
-                self.highscore = 0
+            self.highscore = 0
