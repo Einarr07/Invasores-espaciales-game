@@ -15,6 +15,7 @@ amarillo = (243,216,63)
 fuente = pygame.font.Font("Fuente/monogram.ttf", 40)
 superficie_nivel = fuente.render("NIVEL 01", False, amarillo)
 superficie_juego_terminado = fuente.render("FIN DEL JUEGO", False, amarillo)
+texto_puntos = fuente.render("PUNTOS", False, amarillo)
 
 # Creando la ventana de visualización
 pantalla = pygame.display.set_mode((pantalla_ancho + balance, pantalla_largo + 2*balance))
@@ -74,6 +75,11 @@ while True:
     for vida in range(juego.lives):
         pantalla.blit(juego.grupo_nave.sprite.image, (x,745))
         x += 50
+
+    pantalla.blit(texto_puntos, (50,15,50,50))
+    formatear_puntos = str(juego.score).zfill(5)
+    superficie_puntos = fuente.render(formatear_puntos, False, amarillo)
+    pantalla.blit(superficie_puntos, (50,40,50,50))
 
     juego.grupo_nave.draw(pantalla)
     juego.grupo_nave.sprite.grupo_lasers.draw(pantalla)

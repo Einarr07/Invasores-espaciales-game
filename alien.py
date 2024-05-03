@@ -31,7 +31,7 @@ class NaveMisteriorsa(pygame.sprite.Sprite):
             self.velocidad = 3
         else:
             self.velocidad = -3
-        self.rect = self.image.get_rect(topleft = (x,40))
+        self.rect = self.image.get_rect(topleft = (x,90))
 
     def update(self):
         self.rect.x += self.velocidad

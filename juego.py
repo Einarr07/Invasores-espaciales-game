@@ -33,6 +33,8 @@ class Juego:
         self.lives = 3
         #
         self.run = True
+        #
+        self.score = 0
 
     def crear_obstaculos(self):
         # Calcular el ancho total de los obstáculos
@@ -104,9 +106,14 @@ class Juego:
         # Laser que dispara nuestro tanqu
         if self.grupo_nave.sprite.grupo_lasers:
             for laser_grafico in self.grupo_nave.sprite.grupo_lasers:
-                if pygame.sprite.spritecollide(laser_grafico, self.grupo_aliens, True):
-                    laser_grafico.kill()
+                golpe_aliens = pygame.sprite.spritecollide(laser_grafico, self.grupo_aliens, True)
+                if golpe_aliens:
+                    for alien in golpe_aliens:
+                        self.score += alien.tipo * 100
+                        laser_grafico.kill()
+
                 if pygame.sprite.spritecollide(laser_grafico, self.grupo_nave_misteriosa, True):
+                    self.score += 500
                     laser_grafico.kill()
 
                 for obstaculo in self.obstaculos:
@@ -145,3 +152,4 @@ class Juego:
         self.crear_aliens()
         self.grupo_nave_misteriosa.empty()
         self.obstaculos = self.crear_obstaculos()
+        self.score = 0
