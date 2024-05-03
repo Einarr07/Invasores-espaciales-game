@@ -21,3 +21,8 @@ antes de perder todas las vidas.
 El usuario debe moverse de forma lateral con las flechas del teclado
 y debe disparar con la barra espaciadora para abatir a los alienígenas
 y ganar puntos.
+
+## Video
+https://github.com/Einarr07/Invasores-espaciales-game/assets/96399138/36139566-4bda-46aa-9d52-2cdae5d33882
+
+
